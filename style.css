@@ -4,37 +4,51 @@ body {
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden; /* no scrollbars */
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #000;
 }
 
+/* MAIN WRAPPER (fills viewport and centers container) */
 .expect-soon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* ensures main always fills the screen */
+}
+
+/* INNER CONTAINER WITH GRADIENT BACKGROUND */
+.expect-soon__container {
     position: relative;
-    width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: center; /* center content vertically + horizontally */
 
-    /* 🔥 animated gradient background like the example */
+    padding: 2rem;
+
+    /* animated gradient background */
     background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
     background-size: 400% 400%;
     animation: gradient 15s ease infinite;
 
     color: #ffffff;
-    overflow: hidden;
+    overflow-y: auto; /* allow scroll if content is taller than viewport */
 }
 
-/* removed the ::before blurry blobs completely */
-
-/* Content stays above background */
-.expect-soon__logo,
-.expect-soon__text {
-    position: relative;
-    z-index: 1;
+/* If the screen is very short, avoid awkward centering */
+@media (max-height: 600px) {
+    .expect-soon__container {
+        justify-content: flex-start;
+        padding-top: 3rem;
+        padding-bottom: 2rem;
+    }
 }
 
+/* LOGO */
 .expect-soon__logo {
     width: min(500px, 70vw);
 }
@@ -46,6 +60,7 @@ body {
     object-fit: contain;
 }
 
+/* HEADING */
 .expect-soon__text {
     margin-top: 1.5rem;
     font-size: clamp(2rem, 3vw, 3rem);
@@ -55,21 +70,17 @@ body {
     animation: pulse 3s ease-in-out infinite;
 }
 
-@keyframes pulse {
-    0%   { transform: scale(1); }
-    50%  { transform: scale(1.02); }
-    100% { transform: scale(1); }
-}
-
-/* countdown layout */
+/* COUNTDOWN LAYOUT */
 .expect-soon__countdown {
     position: relative;
-    z-index: 1;
     margin-top: 2rem;
+
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-start;
     justify-content: center;
-    gap: 3rem;              /* space between blocks */
+
+    gap: 3rem; /* default gap for desktop */
     color: #ffffff;
     text-align: center;
     font-size: clamp(1.1rem, 2.5vw, 1.8rem);
@@ -82,7 +93,7 @@ body {
     padding: 0 2rem;
 }
 
-/* vertical golden divider between items */
+/* vertical golden divider between items (desktop & tablet) */
 .countdown__item:not(:last-child)::after {
     content: "";
     position: absolute;
@@ -111,7 +122,14 @@ body {
     opacity: 0.8;
 }
 
-/* 🌈 animated gradient keyframes (from the example) */
+/* ANIMATIONS */
+@keyframes pulse {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+/* animated gradient keyframes */
 @keyframes gradient {
     0% {
         background-position: 0% 50%;
@@ -121,5 +139,87 @@ body {
     }
     100% {
         background-position: 0% 50%;
+    }
+}
+
+/* =========================
+   📱 TABLETS (<= 768px)
+   ========================= */
+@media (max-width: 768px) {
+    .expect-soon__container {
+        padding: 1.5rem;
+    }
+
+    .expect-soon__logo {
+        width: min(360px, 80vw);
+    }
+
+    .expect-soon__text {
+        font-size: clamp(1.8rem, 5vw, 2.4rem);
+        letter-spacing: 0.1em;
+    }
+
+    .expect-soon__countdown {
+        gap: 1.8rem;
+        font-size: clamp(0.95rem, 3vw, 1.2rem);
+    }
+
+    .countdown__item {
+        padding: 0 1.4rem;
+    }
+
+    .countdown__item:not(:last-child)::after {
+        height: 50%;
+    }
+
+    .countdown__value {
+        font-size: clamp(1.9rem, 5.5vw, 2.7rem);
+    }
+}
+
+/* =========================
+   📱 SMALL MOBILES (<= 480px)
+   ========================= */
+@media (max-width: 480px) {
+    .expect-soon__container {
+        padding: 1.25rem;
+        text-align: center;
+    }
+
+    .expect-soon__logo {
+        width: min(280px, 85vw);
+    }
+
+    .expect-soon__text {
+        margin-top: 1.25rem;
+        font-size: clamp(1.6rem, 7vw, 2.1rem);
+        letter-spacing: 0.08em;
+    }
+
+    .expect-soon__countdown {
+        width: 100%;
+        margin-top: 1.75rem;
+
+        justify-content: space-between;
+        gap: 0.75rem;
+    }
+
+    .countdown__item {
+        flex: 1 1 22%;
+        padding: 0 0.25rem;
+    }
+
+    /* remove vertical dividers on tiny screens (they get cramped) */
+    .countdown__item:not(:last-child)::after {
+        display: none;
+    }
+
+    .countdown__value {
+        font-size: clamp(1.5rem, 8vw, 2.3rem);
+    }
+
+    .countdown__label {
+        font-size: 0.6rem;
+        letter-spacing: 0.16em;
     }
 }
